@@ -1,33 +1,37 @@
-import { useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import './ShowGreeting.css';
+import { fetchGreeting } from '../redux/greetings/greetingsSlice';
 
-const ShowGreeting = () => {
+const Greeting = () => {
+  const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.greetings.isLoading);
   const error = useSelector((state) => state.greetings.error);
   const greeting = useSelector((state) => state.greetings.greeting);
 
-  if (isLoading) {
-    return <span>Loading....</span>;
-  }
-
-  if (error) {
-    return <span>Something went wrong!</span>;
-  }
+  const handleRefresh = () => {
+    dispatch(fetchGreeting());
+  };
 
   return (
-    <div>
-      <h1> Random Greeting! </h1>
-      <h3>
-        <strong>You can see the</strong>
-        <i> Hello User! How are you?</i>
-        {' '}
-        different languages!
-      </h3>
-      <p>
-        Greeting:
-        {greeting}
+    <div className="greeting-container">
+      <h1 className="greeting-title">Random Greeting</h1>
+      <p className="greeting-message">
+        <strong>You can see greetings in different languages:</strong>
+        <br />
+        <br />
+        <span>{greeting}</span>
       </p>
+      <div className="button-container">
+        <button className="refresh-button" onClick={handleRefresh} disabled={isLoading} type="button">
+          {' '}
+          {/* Add type="button" */}
+          {isLoading ? 'Refreshing...' : 'Refresh'}
+        </button>
+        {error && <p className="error-message">Something went wrong!</p>}
+      </div>
     </div>
   );
 };
 
-export default ShowGreeting;
+export default Greeting;
